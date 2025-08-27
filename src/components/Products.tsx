@@ -1,6 +1,8 @@
-import { getProducts } from "../services/api";
-import type { Product } from "../types/product";
 import { useEffect, useState } from "react";
+import type { Product } from "../types/product";
+import { getProducts } from "../services/api";
+import { Card, TextField } from '@mui/material'; 
+import { Grid } from "@mui/material";
 
 const Products = () => {
 const [products, setProducts] = useState<Product[]>([]);
@@ -13,38 +15,50 @@ const [searchTerm, setSearchTerm] = useState<string>("");
   }, []);
   console.log("Products", products);
 
-  const filteredProducts = products.filter((product) =>
-    product.title.toLowerCase().includes(searchTerm)
-
-  )
-
-return (
-  <div>
-    <h1>Products</h1>
-    <input
-    type="search"
-    placeholder="Please search"
-    value={searchTerm}
-    onChange = {(e) => setSearchTerm (e.target.value)}
-    ></input>
-    <div>
-      {filteredProducts.map((product) => (
-        <div key={product.id}>
-          <h2>{product.title}</h2>
-          <p>ID {product.id}</p>
-          <p>Price {product.price}</p>
-          <p>Description {product.description}</p>
-          <p>Category {product.category}</p>
-          <img src={product.image} />
-          <p>Rating {product.rating.rate}</p>
-          <p> Count {product.rating.count}</p>
-        </div>
-      ))}
-
-      <div>Products will be here</div>
-    </div>
-  </div>
+const filteredProducts = products.filter((product) =>
+  product.title?.toLowerCase().includes(searchTerm.toLowerCase())
 );
-}
+
+
+    return (
+        <div>
+            <h1>Products</h1>
+             {/*<input type="search" placeholder="Search for a product" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} ></input> */}
+            <TextField 
+            id="outlined-basic"
+            label="Search"
+            variant="outlined"
+            color="secondary"
+            value={searchTerm}
+            placeholder="Search for a Product"
+            onChange={(e) => setSearchTerm(e.target.value)}
+            sx={{ backgroundColor: "white", borderRadius: "10px", padding: "10px" }}
+            />
+            <Grid container spacing={2} sx={{ p:2 }}>
+            {filteredProducts.map((product) => (
+                <Card 
+                    key={product.id}
+                    sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",    
+                    }} 
+                    >  
+                    <div key={product.id}>
+                        <h2>{product.title}</h2>
+                        <h3>{product.price}€</h3>
+                        <p>{product.description}</p>
+                        <p>{product.category}</p>
+                        <img src={product.image} alt="" />
+                        <p>{product.rating.rate}</p>
+                        <p>Rated {product.rating.count} times.</p>
+                    </div>
+                </Card>
+            ))}
+            </Grid>
+        </div>
+        );
+};
+
 
 export default Products;
